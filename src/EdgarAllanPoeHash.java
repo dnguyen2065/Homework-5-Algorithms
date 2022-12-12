@@ -22,7 +22,6 @@ public class EdgarAllanPoeHash {
             stringBuilder.append(line);
             stringBuilder.append(ls);
         }
-        // delete the last new line separator
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         reader.close();
 
