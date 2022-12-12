@@ -17,6 +17,6 @@ public class App {
         ArrayList<Integer> hashArray = EAPH.toHashArray(asciiArray);
         Hashtable<Integer, Integer> hashTable = EAPH.toHashTable(hashArray, poemArr);
         System.out.println(hashArray);
-        // EAPH.printHashTable(hashTable, hashArray);
+        EAPH.printHashTable(hashTable, hashArray);
     }
 }

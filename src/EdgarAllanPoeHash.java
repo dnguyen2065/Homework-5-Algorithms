@@ -106,11 +106,12 @@ public class EdgarAllanPoeHash {
 
     public Hashtable<Integer, Integer> toHashTable(ArrayList<Integer> hashArray, String[] words) {
         Hashtable<Integer, Integer> hashTable = new Hashtable<>(293);
+        ArrayList<Integer> filterList = new ArrayList<>();
         for (int i = 1; i < 293; i++) {
             for (int j : hashArray)
-                if (i == j) {
-                    hashTable.put(i, j);
-                }
+                // if (filterList.contains(j)) {
+                hashTable.put(i, j);
+            // }
         }
         return hashTable;
 
@@ -119,15 +120,15 @@ public class EdgarAllanPoeHash {
     public void printHashTable(Hashtable<Integer, Integer> hashTable, ArrayList<Integer> hashArray) {
         int intvalue = 0;
         for (int i = 0; i < hashTable.size(); i++) {
-            System.out.println(hashTable.get(i));
-            if (hashTable.get(i) != null) {
-                intvalue = hashTable.get(i);
-            }
+            System.out.println(hashTable.get(76));
+            // if (hashTable.get(i) != null) {
+            // intvalue = hashTable.get(i);
+            // }
 
-            if (intvalue == hashArray.get(i)) {
-                System.out.println("if entered");
-                System.out.println(" " + hashArray.get(i));
-            }
+            // if (intvalue == hashArray.get(i)) {
+            // System.out.println("if entered");
+            // System.out.println(" " + hashArray.get(i));
+            // }
         }
     }
 
