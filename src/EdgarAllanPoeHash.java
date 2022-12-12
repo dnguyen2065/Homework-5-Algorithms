@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.io.*;
 import java.util.*;
 
@@ -79,22 +82,12 @@ public class EdgarAllanPoeHash {
             } else if (fullHashArray.get(i) == 0) {
                 wordHashs.add(fullHashArray.get(i - 1));
             }
+
         }
-
+        wordHashs.remove(228);
+        wordHashs.remove(227);
+        wordHashs.remove(226);
         return wordHashs;
-    }
-
-    public ArrayList<String> wordHashAssociation(ArrayList<Integer> hashArray, String[] words) {
-        ArrayList<String> wordHashList = new ArrayList<>();
-        int temp = 0;
-        System.out.println(hashArray.size());
-        System.out.println(words.length);
-        // for (int j = 0; j < hashArray.size(); j++) {
-        // wordHashList.add(words[j]);
-        // hashArray.add(hashArray.get(j));
-
-        // }
-        return wordHashList;
     }
 
     public String[] discardDuplicates(String[] list) {
@@ -117,36 +110,128 @@ public class EdgarAllanPoeHash {
         return wordarr;
     }
 
-    public Hashtable<Integer, Integer> toHashTable(ArrayList<Integer> hashArray, String[] words) {
-        Hashtable<Integer, Integer> hashTable = new Hashtable<>(293);
+    public ArrayList<Integer> toHashTable(ArrayList<Integer> hashArray, String[] words) {
         ArrayList<Integer> filterList = new ArrayList<>();
-        int temp = 0;
-        for (int i = 1; i < 293; i++) {
-            for (int j : hashArray) {
-                if (temp == j) {
-                    hashTable.put(i + 1, j);
-                    temp = 0;
-                }
-                if (i == j) {
-                    hashTable.put(i, j);
-                    temp = j;
-                }
+        ArrayList<String> wordList = new ArrayList<>();
+        for (int i = 0; i < 293; i++) {
+            filterList.add(-1);
+            wordList.add(" ");
+        }
+        System.out.println(hashArray.size());
+        for (int i = 0; i < hashArray.size(); i++) {
+            int j = hashArray.get(i);
+            if (filterList.get(i) == -1) {
+                filterList.set(j, j);
+                wordList.set(j, words[i]);
+            } else {
+                int temp = 0;
+                boolean exit = false;
+                while (!exit) {
+                    if (j + temp + 1 >= 293) {
+                        temp = j * -1;
+                    } else {
+                        temp++;
+                    }
+                    if (filterList.get(j + temp) == -1) {
+                        filterList.set(j + temp, j);
+                        wordList.set(j + temp, words[i]);
 
+                        exit = true;
+                    }
+                }
             }
 
-            // }
         }
-        return hashTable;
+        for (int i = 0; i < filterList.size(); i++) {
+            System.out.println(i + " " + wordList.get(i) + " " + filterList.get(i));
+        }
+        return filterList;
 
     }
 
-    public void printHashTable(Hashtable<Integer, Integer> hashTable, ArrayList<Integer> hashArray) {
-        int intvalue = 0;
-        // System.out.println(hashTable);
-        for (int i = 0; i < hashTable.size(); i++) {
-            System.out.println(i + " " + hashTable.get(i));
+    public void questions(ArrayList<Integer> thing) {
+
+        int accum = 0;
+
+        for (int i : thing) {
+            if (i != -1) {
+                accum++;
+            }
+        }
+        System.out.println("There are " + accum + " non-empty addresses. This makes the load factor "
+                + (float) accum / 293.0);
+        int max = 0;
+        int temp = 0;
+        int curr = 0;
+        int maxStarts = 0;
+        int maxEnd = 0;
+        for (int i = 0; i < thing.size(); i++) {
+            if (thing.get(i) == -1) {
+                curr++;
+            } else {
+
+                temp = curr;
+                curr = 0;
+            }
+            if (max < temp) {
+
+                maxEnd = i;
+                max = temp;
+                maxStarts = maxEnd - max;
+            }
+        }
+        System.out.println("The longest empty area in the table is length " + max + " starting at address " + maxStarts
+                + " and ending at address " + maxEnd);
+        int max2 = 0;
+        int temp2 = 0;
+        int curr2 = 0;
+        int maxStarts2 = 0;
+        int maxEnd2 = 0;
+        for (int i = 0; i < thing.size(); i++) {
+            if (thing.get(i) != -1) {
+                curr2++;
+            } else {
+                temp2 = curr2;
+                curr2 = 0;
+            }
+            if (max2 < temp2) {
+                maxEnd2 = i;
+                max2 = temp2;
+                maxStarts2 = maxEnd2 - max2;
+            }
+        }
+        System.out
+                .println(
+                        "The longest cluster area in the table is length " + max2 + " starting at address " + maxStarts2
+                                + " and ending at address " + maxEnd2);
+        ArrayList<Integer> nonneg1thing = new ArrayList<>();
+        for (int i : thing) {
+            if (i != -1) {
+                nonneg1thing.add(i);
+            }
+        }
+        Integer maxOccurredElement = nonneg1thing.stream()
+                .reduce(BinaryOperator.maxBy((o1, o2) -> Collections.frequency(nonneg1thing, o1) -
+                        Collections.frequency(nonneg1thing, o2)))
+                .orElse(null);
+        int amount = Collections.frequency(nonneg1thing, maxOccurredElement);
+        System.out.println("The hash value with the greatest number of distinct words is " + maxOccurredElement
+                + " this many words have this hash value " + amount);
+
+        int endval = 0;
+        int actualVal = 0;
+        int max3 = 0;
+        for (int i = 0; i < thing.size(); i++) {
+            if (thing.get(i) != -1) {
+                endval = i - thing.get(i);
+                if (max3 < endval) {
+                    actualVal = thing.get(i);
+                    max3 = endval;
+                }
+            }
 
         }
+        System.out.println("Word with value " + actualVal + " is placed " + max3 + " spaces away from its hash value.");
     }
 
 }
